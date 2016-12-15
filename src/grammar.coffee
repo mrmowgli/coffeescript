@@ -696,7 +696,6 @@ grammar =
        INDENT Expression OUTDENT',              -> new Assign $1, $4, $2
     o 'SimpleAssignable COMPOUND_ASSIGN TERMINATOR
        Expression',                             -> new Assign $1, $4, $2
-    o 'SimpleAssignable EXTENDS Expression',    -> new Extends $1, $3
   ]
 
 
@@ -733,7 +732,7 @@ operators = [
   ['left',      'BIN?']
   ['nonassoc',  'INDENT', 'OUTDENT']
   ['right',     'YIELD']
-  ['right',     '=', ':', 'COMPOUND_ASSIGN', 'RETURN', 'THROW', 'EXTENDS']
+  ['right',     '=', ':', 'COMPOUND_ASSIGN', 'RETURN', 'THROW']
   ['right',     'FORIN', 'FOROF', 'FORFROM', 'BY', 'WHEN']
   ['right',     'IF', 'ELSE', 'FOR', 'WHILE', 'UNTIL', 'LOOP', 'SUPER', 'CLASS', 'IMPORT', 'EXPORT']
   ['left',      'POST_IF']

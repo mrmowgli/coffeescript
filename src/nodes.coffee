@@ -834,20 +834,6 @@ exports.TaggedTemplateCall = class TaggedTemplateCall extends Call
   compileNode: (o) ->
     @variable.compileToFragments(o, LEVEL_ACCESS).concat @args[0].compileToFragments(o, LEVEL_LIST)
 
-#### Extends
-
-# Node to extend an object's prototype with an ancestor object.
-# After `goog.inherits` from the
-# [Closure Library](https://github.com/google/closure-library/blob/master/closure/goog/base.js).
-exports.Extends = class Extends extends Base
-  constructor: (@child, @parent) ->
-
-  children: ['child', 'parent']
-
-  # Hooks one constructor into another's prototype chain.
-  compileToFragments: (o) ->
-    new Call(new Value(new Literal utility 'extend', o), [@child, @parent]).compileToFragments o
-
 #### Access
 
 # A `.` access into a property of a value, or the `::` shorthand for
@@ -2807,23 +2793,6 @@ exports.If = class If extends Base
 # ---------
 
 UTILITIES =
-
-  # Correctly set up a prototype chain for inheritance, including a reference
-  # to the superclass for `super()` calls, and copies of any static properties.
-  extend: (o) -> "
-    function(child, parent) {
-      for (var key in parent) {
-        if (#{utility 'hasProp', o}.call(parent, key)) child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    }
-  "
 
   # Create a function bound to the current value of "this".
   bind: -> '

@@ -15,7 +15,7 @@ test "classes with a four-level inheritance chain", ->
     @static: (string) ->
       "static/#{string}"
 
-  class FirstChild extends Base
+  FirstChild = class extends Base
     func: (string) ->
       super('one/') + string
 
@@ -26,7 +26,7 @@ test "classes with a four-level inheritance chain", ->
   thirdCtor = ->
     @array = [1, 2, 3]
 
-  class ThirdChild extends SecondChild
+  ThirdChild = class extends SecondChild
     constructor: -> thirdCtor.call this
 
     # Gratuitous comment for testing.
@@ -56,11 +56,11 @@ test "constructors with inheritance and super", ->
     constructor: (arg) ->
       @prop = 'top-' + arg
 
-  class SuperClass extends TopClass
+  SuperClass = class extends TopClass
     constructor: (arg) ->
       identity super 'super-' + arg
 
-  class SubClass extends SuperClass
+  SubClass = class extends SuperClass
     constructor: ->
       identity super 'sub'
 
@@ -75,13 +75,11 @@ test "basic classes, again, but in the manual prototype style", ->
   Base::['func-func'] = (string) ->
     "dynamic-#{string}"
 
-  FirstChild = ->
-  SecondChild = ->
-  ThirdChild = ->
-    @array = [1, 2, 3]
-    this
-
-  ThirdChild extends SecondChild extends FirstChild extends Base
+  class FirstChild extends Base
+  class SecondChild extends FirstChild
+  class ThirdChild extends SecondChild
+    constructor: ->
+      @array = [1,2,3]
 
   FirstChild::func = (string) ->
     super('one/') + string
@@ -105,13 +103,11 @@ test "super with plain ol' prototypes", ->
   TopClass::func = (arg) ->
     'top-' + arg
 
-  SuperClass = ->
-  SuperClass extends TopClass
+  class SuperClass extends TopClass
   SuperClass::func = (arg) ->
     super 'super-' + arg
 
-  SubClass = ->
-  SubClass extends SuperClass
+  class SubClass extends SuperClass
   SubClass::func = ->
     super 'sub'
 
@@ -821,9 +817,8 @@ test "#1392 calling `super` in methods defined on namespaced classes", ->
     m: -> 5
     n: -> 4
   namespace =
-    A: ->
+    A: class extends Base
     B: ->
-  namespace.A extends Base
 
   namespace.A::m = -> super
   eq 5, (new namespace.A).m()
@@ -838,8 +833,7 @@ test "#1392 calling `super` in methods defined on namespaced classes", ->
   eq 1, count
 
   class C
-    @a: (->)
-    @a extends Base
+    @a: (class extends Base)
     @a::m = -> super
   eq 5, (new C.a).m()
 
@@ -849,8 +843,7 @@ test "dynamic method names and super", ->
     m: -> 5
     m2: -> 4.5
     n: -> 4
-  A = ->
-  A extends Base
+  A = class extends Base
 
   m = 'm'
   A::[m] = -> super
